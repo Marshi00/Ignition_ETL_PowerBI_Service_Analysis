@@ -1,0 +1,22 @@
+MinuteCalendar = 
+ADDCOLUMNS(
+    GENERATE(
+        CALENDAR(DATE(2020, 1, 1), DATE(2030, 12, 31)), -- Adjust dates as needed
+        GENERATESERIES(0, 1439, 1) -- 1440 minutes in a day (0 to 1439)
+    ),
+    "FullDateTime", [Date] + TIME(INT([Value] / 60), MOD([Value], 60), 0), -- Adds hours and minutes to the base date
+    "Year", YEAR([Date]), -- Year of the date
+    "Month", MONTH([Date]), -- Month of the date (1 to 12)
+    "Day", DAY([Date]), -- Day of the month
+    "Quarter", QUARTER([Date]), -- Quarter of the year (1, 2, 3, 4)
+    "DayOfWeek", WEEKDAY([Date], 2), -- Day of the week (1=Monday, 7=Sunday)
+    "WeekdayName", FORMAT([Date], "dddd"), -- Day name (e.g., "Monday")
+    "MonthName", FORMAT([Date], "MMMM"), -- Full month name (e.g., "January")
+    "IsWeekend", IF(WEEKDAY([Date], 2) >= 6, 1, 0), -- 1 if Weekend (Saturday/Sunday), 0 if not
+    "MonthStart", EOMONTH([Date], -1) + 1, -- First day of the month
+    "MonthEnd", EOMONTH([Date], 0), -- Last day of the month
+    "YearMonth", FORMAT([Date], "YYYY-MM"), -- Year-Month (e.g., "2020-01")
+    "DayOfYear", FORMAT([Date], "DDD"), -- Day of the year (1 to 365/366)
+    "Hour", INT([Value] / 60), -- Extract hour from Value
+    "Minute", MOD([Value], 60) -- Extract minute from Value
+)

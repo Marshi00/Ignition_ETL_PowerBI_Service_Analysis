@@ -1,0 +1,1 @@
+ALTER TABLE records ADD CONSTRAINT unique_tstamp_tag UNIQUE (T_stamp, tag_name);
