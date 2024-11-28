@@ -4,12 +4,12 @@
 
 CREATE TABLE IF NOT EXISTS public.records
 (
-    id SERIAL PRIMARY KEY,
-    tag_name text COLLATE pg_catalog."default",
+    id integer NOT NULL DEFAULT nextval('records_id_seq'::regclass),
+    ignition_path text COLLATE pg_catalog."default",
     value double precision,
     t_stamp timestamp without time zone,
     CONSTRAINT records_pkey PRIMARY KEY (id),
-    CONSTRAINT unique_tstamp_tag UNIQUE (t_stamp, tag_name)
+    CONSTRAINT unique_tstamp_tag UNIQUE (t_stamp, ignition_path)
 )
 
 TABLESPACE pg_default;

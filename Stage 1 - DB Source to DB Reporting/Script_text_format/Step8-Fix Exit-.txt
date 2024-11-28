@@ -1,0 +1,156 @@
+import time
+import threading
+from java.util import Date
+from java.text import SimpleDateFormat
+# Start time of script execution
+ExecuteStart = system.date.now()
+print("Execute Script Start Time: ", ExecuteStart)
+
+# Define the path of the current tag/script
+path = ['[hist/iqaluit scada system - wtp:wtp]analog/fit_5001/val']
+
+# Step 1: Retrieve the last successful run's end_date for the specific path from the database
+query = """
+    SELECT end_date 
+    FROM script_run_info 
+    WHERE status = 'Success' AND path = ? 
+    ORDER BY finish_time DESC 
+    LIMIT 1;
+"""
+last_run_data = system.db.runPrepQuery(query, path, "IQ_Report")
+print("Last run data retrieved: ", last_run_data)
+
+# Step 2: Check if a previous successful run exists
+if last_run_data.rowCount > 0:
+    last_end_date_str = last_run_data.getValueAt(0, "end_date")
+    last_end_date = system.date.parse(last_end_date_str, "yyyy-MM-dd HH:mm:ss")
+    print("Last successful end date:", last_end_date)
+
+    time_diff = system.date.secondsBetween(last_end_date, system.date.now())
+    print("Time difference from last run (seconds):", time_diff)
+
+    if time_diff < 86400:  # Check if last successful run was within a day
+        print("Script won't run since the last successful run was less than a day ago.")
+        system.exit()  # Exit the script early
+
+    sDate = last_end_date
+else:
+    print("No previous successful run found. Using current time as start date.")
+    sDate = system.date.now()
+
+# Step 3: Set eDate to sDate + 1 day
+eDate = system.date.addDays(sDate, 1)
+startDate = sDate
+endDate = eDate
+print("Start Date:", startDate, "End Date:", endDate)
+
+# Step 4: Log the start of this run with the given date range
+def log_script_run(path, start_time, finish_time, status, details="", startDate=None, endDate=None):
+    query = """
+        INSERT INTO script_run_info (path, start_time, finish_time, status, details, start_date, end_date)
+        VALUES (?, ?, ?, ?, ?, ?, ?);
+    """
+    system.db.runPrepUpdate(query, [path, start_time, finish_time, status, details, sDate, eDate], "IQ_Report")
+    print("Script run logged with start time:", start_time, "status:", status)
+
+
+log_script_run(path, ExecuteStart, None, "Running", "Script started.", startDate, endDate)
+
+# Define the 20-minute timer
+MAX_EXECUTION_TIME = 1200  # 20 minutes in seconds
+execution_timed_out = [False]
+
+def timer_function():
+    time.sleep(MAX_EXECUTION_TIME)
+    if not all(insert_statuses):
+        print("Execution timed out after 20 minutes.")
+        execution_timed_out[0] = True
+
+# Start the timer thread
+timeout_thread = threading.Thread(target=timer_function)
+timeout_thread.start()
+print("Timeout thread started with max execution time of 20 minutes.")
+
+# Calculate additional variables for query
+numDays = system.date.daysBetween(sDate, eDate)
+timeout = numDays * 1000 * 24 * 12
+returnSize = numDays * 24 * 60
+print("Number of days between dates:", numDays, "Return size:", returnSize, "Timeout:", timeout)
+
+# Step 5: Retrieve historical data
+data = system.tag.queryTagHistory(
+    paths=paths, 
+    startDate=startDate, 
+    endDate=endDate, 
+    returnSize=returnSize, 
+    aggregationModes=["Average"], 
+    returnFormat='Tall', 
+    timeout=timeout
+)
+print("Historical data query returned with row count:", data.getRowCount())
+
+columnNames = list(data.getColumnNames())
+pyDataSet = system.dataset.toPyDataSet(data)
+rowCount = pyDataSet.getRowCount()
+print("Dataset column names:", columnNames, "Total rows:", rowCount)
+
+insert_statuses = [False] * rowCount  # Track insert status for each row
+
+def increment_completed_inserts(row_index):
+    insert_statuses[row_index] = True
+    print("Row insertion status updated for index:", row_index)
+
+# Function for asynchronous row insertion
+def insertRowAsync(row, row_index, attempt=1, max_attempts=3):
+    if execution_timed_out[0]:
+        print("Insert stopped due to timeout.")
+        return
+    try:
+        tag_name, value, _, T_stamp = row[0], row[1], row[2], row[3]
+        value = round(value, 2) if isinstance(value, (float, int)) else value
+
+        if value is not None:
+            query = """
+                INSERT INTO records (T_stamp, tag_name, value)
+                VALUES (?, ?, ?)
+                ON CONFLICT (T_stamp, tag_name)
+                DO UPDATE SET value = EXCLUDED.value;
+            """
+            system.db.runPrepUpdate(query, [T_stamp, tag_name, value], "IQ_Report")
+            print("Row inserted with T_stamp:", T_stamp)
+        else:
+            print("Skipping row due to None value:", row)
+        increment_completed_inserts(row_index)
+    except Exception:
+        if attempt < max_attempts:
+            print("Error inserting row with T_stamp:", T_stamp, "| Attempt:", attempt, "| Retrying...")
+            system.util.invokeLater(lambda: insertRowAsync(row, row_index, attempt + 1, max_attempts), 1000)
+        else:
+            print("Failed to insert row with T_stamp after", max_attempts, "attempts:", T_stamp)
+            increment_completed_inserts(row_index)
+
+sleep_time = 200  # Delay between async inserts
+for idx, row in enumerate(pyDataSet):
+    system.util.invokeLater(lambda r=row, i=idx: system.util.invokeAsynchronous(lambda: insertRowAsync(r, i)), idx * sleep_time)
+    print("Scheduled asynchronous insert for row:", idx)
+
+# Wait for all inserts to complete or timeout
+def wait_for_inserts():
+    print("Waiting for all inserts to complete or timeout...")
+    while not all(insert_statuses):
+        if execution_timed_out[0]:
+            print("Exiting wait due to timeout.")
+            return
+        print("Completed inserts:", sum(insert_statuses), "out of", rowCount)
+        time.sleep(1)
+
+wait_for_inserts()
+
+# End of script execution
+ExecuteEnd = system.date.now()
+print("Execute Script End Time:", ExecuteEnd)
+
+# Log the end of the run
+status = "Success" if not execution_timed_out[0] else "Timed Out"
+log_script_run(path, ExecuteStart, ExecuteEnd, status, "Script " + status.lower() + " after running.", startDate, endDate)
+print("Script execution completed in", system.date.secondsBetween(ExecuteStart, ExecuteEnd), "seconds.")
