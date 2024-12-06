@@ -1,65 +1,4 @@
-list_ETL_AVG_paths = [
-    "[hist/iqaluit scada system - wtp:wtp]analog/fit_1001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_1001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_1001a/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_1002/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_1001b/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_1001c/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_2101/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_2111/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_2121/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_2131/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_2501/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501a/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501b/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501c/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501d/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501e/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501f/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501g/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_5001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_5002/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/tit_5001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501h/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/ait_2501i/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/fit_5001/val",
-    "[hist/iqaluit scada system - wtp:wtp]plant_str_lvl_sp",
-    "[hist/iqaluit scada system - wtp:wtp]plant_stp_lvl_sp",
-    "[hist/iqaluit scada system - wtp:wtp]analog/fit_4001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_4001/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/fit_4011/val",
-    "[hist/iqaluit scada system - wtp:wtp]analog/lit_4011/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_fit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_fit_02/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_pit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_tit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/20_fit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/20_pit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/20_tit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_ait_02/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/10_ait_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/30_fit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/30_pit_01/val",
-    "[hist/iqaluit scada system - bs1:bs1]analog/30_tit_01/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/fit_311/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/pit_310/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/tit_310/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/ait_313/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/ait_312/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/fit_312/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/fit_310/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/tit_314/val",
-    "[hist/iqaluit scada system - bs2:bs2]analog/fit_313/val",
-    "[hist/iqaluit scada system - LS1:LS1]analog/lit_101/val",
-    "[hist/iqaluit scada system - LS1:LS1]analog/fit_101/val",
-    "[hist/iqaluit scada system - LS2:LS2]analog/lit_102/val",
-    "[hist/iqaluit scada system - WWTP:WWTP]li_01_100/val",
-    "[hist/iqaluit scada system - WWTP:WWTP]FI_01_150/val",
-    "[hist/iqaluit scada system - WWTP:WWTP]FI_02_328/val",
-    "[hist/iqaluit scada system - WWTP:WWTP]daf1_tss",
-    "[hist/iqaluit scada system - WWTP:WWTP]daf2_tss",
-    "[hist/iqaluit scada system - WWTP:WWTP]FI_04_300/val",
-]
+list_ETL_AVG_paths = A
 i = 1
 for item in list_ETL_AVG_paths:
 
@@ -142,7 +81,7 @@ for item in list_ETL_AVG_paths:
 	    endDateSafe = endDate.replace(":", "_")
 	
 	    # Create the dynamic file path with formatted dates
-	    filePath = r"C:/Users/IQ-Re/OneDrive/Desktop/Data/" + str(i)+"_" +startDateSafe + "_" + endDateSafe + ".csv"
+	    filePath = V + str(i)+"_" +startDateSafe + "_" + endDateSafe + ".csv"
 	
 	    # Write the file
 	    system.file.writeFile(filePath, csv)

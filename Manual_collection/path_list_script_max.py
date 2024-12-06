@@ -1,32 +1,4 @@
-list_ETL_Max_paths = [
-    "[hist/iqaluit scada system - wtp:wtp]totalizer/fqi_1001",
-    "[hist/iqaluit scada system - wtp:wtp]valve/fv_2501/val_fdbk",
-    "[hist/iqaluit scada system - wtp:wtp]totalizer/fqi_5001",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_1/val_speedfdbk",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_2/val_speedfdbk",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_3/val_speedfdbk",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_105/high speed",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_1/sts_running",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_2/sts_running",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_3/sts_running",
-    "[hist/iqaluit scada system - bs1:bs1]motor/20_p_105/run status",
-    "[hist/iqaluit scada system - bs2:bs2]totalizer/_opc/fqi_311/fqi_311",
-    "[hist/iqaluit scada system - bs2:bs2]totalizer/_opc/fqi_312/fqi_312",
-    "[hist/iqaluit scada system - bs2:bs2]totalizer/_opc/fqi_310/fqi_310",
-    "[hist/iqaluit scada system - bs2:bs2]totalizer/_opc/fqi_312/fqi_313",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p301/val_speedfdbk",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p302/val_speedfdbk",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p303/val_speedfdbk",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p304/val_speedfdbk",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p301/sts_running",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p302/sts_running",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p303/sts_running",
-    "[hist/iqaluit scada system - bs2:bs2]motor/p304/sts_running",
-    "[hist/iqaluit scada system - bs2:bs2]diesel pump/p305/sts_running",
-    "[hist/iqaluit scada system - bs2:bs2]discrete/pcv_306_closed/sts",
-    "[hist/iqaluit scada system - WWTP:WWTP]yi_02_310/sts",
-    "[hist/iqaluit scada system - WWTP:WWTP]yi_02_320/sts",
-]
+list_ETL_Max_paths = B
 i = 1
 for item in list_ETL_Max_paths:
 
@@ -109,7 +81,7 @@ for item in list_ETL_Max_paths:
 	    endDateSafe = endDate.replace(":", "_")
 	
 	    # Create the dynamic file path with formatted dates
-	    filePath = r"C:/Users/IQ-Re/OneDrive/Desktop/Data/" + str(i)+"_" +startDateSafe + "_" + endDateSafe + ".csv"
+	    filePath = V + str(i)+"_" +startDateSafe + "_" + endDateSafe + ".csv"
 	
 	    # Write the file
 	    system.file.writeFile(filePath, csv)

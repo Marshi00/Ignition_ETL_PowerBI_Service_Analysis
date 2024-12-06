@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Define the base folder path
-base_folder = "C:/Users/Marsh/Desktop/Work/PowerBi Data till start - 2024-12-02 end/AVG"
+base_folder = F
 
 # Check if the base folder exists
 if not os.path.exists(base_folder):
@@ -26,7 +26,7 @@ for i in range(1, 61):  # Subfolders numbered from 1 to 27
     merged_data = pd.concat([pd.read_csv(os.path.join(subfolder_path, file)) for file in csv_files])
 
     # Name the merged file as '6_all.csv'
-    merged_file_name = "6_all.csv"
+    merged_file_name = G
     merged_file_path = os.path.join(subfolder_path, merged_file_name)
 
     # Save the merged file

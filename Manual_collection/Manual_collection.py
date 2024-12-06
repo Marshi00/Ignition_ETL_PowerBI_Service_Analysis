@@ -1,4 +1,4 @@
-dest_path = "[hist/iqaluit scada system - bs2:bs2]totalizer/_opc/fqi_312/fqi_312"
+dest_path = N
 aggregation_for_this_path = "Maximum"
 # Start time of script execution
 ExecuteStart = system.date.now()
@@ -77,7 +77,7 @@ while sDate < finalEndDate:
     endDateSafe = endDate.replace(":", "_")
 
     # Create the dynamic file path with formatted dates
-    filePath = r"C:/Users/IQ-Re/OneDrive/Desktop/Data/" + startDateSafe + "_" + endDateSafe + "_fqi_312.csv"
+    filePath = V + startDateSafe + "_" + endDateSafe + "_fqi_312.csv"
 
     # Write the file
     system.file.writeFile(filePath, csv)
