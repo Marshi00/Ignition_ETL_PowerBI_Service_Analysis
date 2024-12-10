@@ -4,6 +4,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
 
 # Database connection configuration
+
 DB_USER = Q
 DB_PASSWORD = E
 DB_HOST = R
